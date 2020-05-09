@@ -18,7 +18,7 @@ _, IMG_FILENAME = sys.argv
 
 master = tkinter.Tk()
 img_cv2 = cv2.imread(IMG_FILENAME)
-IMG = ImageTk.PhotoImage(Image.open(IMG_FILENAME).resize((400, 300), resample = 0))
+IMG = ImageTk.PhotoImage(Image.open(IMG_FILENAME).resize((1600, 1200), resample = 0))
 IMG_WIDTH, IMG_HEIGHT = IMG.width(), IMG.height()
 print("Image H and W" , IMG_HEIGHT, IMG_WIDTH)
 
@@ -46,11 +46,16 @@ def on_click(event):
         BOTTOM_RIGHT = event.y, event.x
         print("BOTTOM_RIGHT", BOTTOM_RIGHT)
         try:
-            REC_H = BOTTOM_RIGHT[0] - TOP_LEFT[0]
-            REC_W = BOTTOM_RIGHT[1] - TOP_LEFT[1]
-            crop_img = img_cv2[TOP_LEFT[0]:TOP_LEFT[0] + REC_H, TOP_LEFT[1]:TOP_LEFT[1] + REC_W]
-            AVG_B, AVG_G, AVG_R = avarage_BGR.find_avarage(crop_img)
-            print("Average value ", AVG_R, AVG_G, AVG_B)
+            SUM_B, SUM_G, SUM_R = ( 0, 0, 0)
+            for i in range(0, 1, 1):
+                NewY = TOP_LEFT[0] + i
+                NewX = TOP_LEFT[1] + i
+                REC_H = BOTTOM_RIGHT[0] - NewY
+                REC_W = BOTTOM_RIGHT[1] - NewX
+                crop_img = img_cv2[NewY:NewY + REC_H, NewX:NewX + REC_W]
+                AVG_B, AVG_G, AVG_R = avarage_BGR.find_avarage(crop_img)
+                SUM_B, SUM_G, SUM_R = SUM_B + AVG_B, SUM_G + AVG_G, SUM_R + AVG_R 
+            print("Average value ", round(SUM_R/1, 3), round(SUM_G/1, 3), round(SUM_B/1, 3))
 
         except:
             BOTTOM_RIGHT = None
